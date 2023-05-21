@@ -1,0 +1,152 @@
+>>> from news_portal.models import *  
+
+>>> User.objects.create_user('Ivan Ivanov')
+<User: Ivan Ivanov>
+>>> User.objects.create_user('Petr Petrov')
+<User: Petr Petrov>
+
+>>> author1 = Author(author_id=1)
+>>> author1.save()
+>>> Author.objects.create(author_id=2)
+<Author: Author object (2)>
+>>> Author.objects.create(author_id=3)
+<Author: Author object (3)>
+
+>>> cat1 = Category.objects.create(name_category='Culture')    
+>>> cat2 = Category.objects.create(name_category='Travel')
+>>> cat3 = Category.objects.create(name_category='Sports')
+>>> cat4 = Category.objects.create(name_category='Weather')
+
+>>> article_1 = Post.objects.create(author_id=2, post_kind='A', title='Сливочное пиво из Гарри Поттера', content='Рецепт пива. Ингридиенты')                     
+>>> article_2 = Post.objects.create(author_id=3,post_kind='A', title='Прогноз погоды', content='Прогноз погоды на выходные дни в последние дни апреля. Ожидается по
+холодание.')
+>>> news_1 = Post.objects.create(author_id=1, post_kind='N', title='Opera festival', content='Opera fetival will take place in St.Petersburg in one month')
+
+>>> postcat1 = PostCategory.objects.create(post_id=2, category_id=4)
+>>> postcat2 = PostCategory.objects.create(post_id=1, category_id=2)
+>>> postcat2 = PostCategory.objects.create(post_id=1, category_id=1)
+>>> postcat3 = PostCategory.objects.create(post_id=3, category_id=1)
+
+>>> com1 = Comment.objects.create(post_id=2, user_id=3, comment_text='Very good')
+>>> com2 = Comment.objects.create(post_id=1, user_id=3, comment_text='Very tasty')
+>>> com3 = Comment.objects.create(post_id=3, user_id=2, comment_text='I am going to visit it. Will anyone join me?')
+>>> com4 = Comment.objects.create(post_id=1, user_id=2, comment_text='I have never whatched Harry Potter')
+>>> com5 = Comment.objects.create(post_id=2, user_id=2, comment_text='I am waiting for the weekend')
+>>> com6 = Comment.objects.create(post_id=2, user_id=1, comment_text='Good weather')
+
+
+>>> p1 = Post.objects.get(pk=1)
+>>> p1
+<Post: Post object (1)>
+>>> p1.like()
+>>> p1.like()
+>>> p1.like()
+>>> p1.dislike()
+>>> p1.like()
+>>> p1.like()
+>>> 
+>>> P2 = Post.objects.get(pk=2)
+>>> P2
+<Post: Post object (2)>
+>>> P2.like()
+>>> P2.like()
+>>> P2.dislike()
+>>> P2.dislike()
+>>> P2.dislike()
+>>> P2.dislike()
+>>> p3 = Post.objects.get(pk=3)
+>>> p3
+<Post: Post object (3)>
+>>> p3.like()   
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> p3.like()
+>>> 
+>>> c1 = Comment.objects.get(pk=1) 
+>>> c1
+<Comment: Comment object (1)>
+>>> c1.like()
+>>> c1.like()
+>>> c1.like()
+>>> c1.like()
+>>> c2 = Comment.objects.get(pk=2)
+>>> c2
+<Comment: Comment object (2)>
+>>> c2.like()
+>>> c2.like()
+>>> c2.like()
+>>> c2.dislike()
+>>> c3 = Comment.objects.get(pk=3)
+>>> c3
+<Comment: Comment object (3)>
+>>> c3.like()
+>>> c4 = Comment.objects.get(pk=4)
+>>> c4
+<Comment: Comment object (4)>
+>>> c4.dislike()
+>>> c4.dislike()
+>>> c4.dislike()
+>>> c5 = Comment.objects.get(pk=5)
+>>> c5 
+<Comment: Comment object (5)>
+>>> c5.like()
+>>> c5.like()
+>>> c5.like()
+>>> c5.like()
+>>> c5.like()
+>>> c5.dislike()
+>>> c6 = Comment.objects.get(pk=6)
+>>> c6
+<Comment: Comment object (6)>
+>>> c6.like()
+>>> c6.dislike()
+>>> c6.like()
+>>> c6.like()
+
+
+>>> a1 = Author.objects.get(pk=1)
+>>> a1
+<Author: Author object (1)>
+>>> a1.update_rating()
+39
+>>> a2 = Author.objects.get(pk=2)
+>>> a2
+<Author: Author object (2)>
+>>> a2.update_rating()
+13
+>>> a3 = Author.objects.get(pk=3)
+>>> a3
+<Author: Author object (3)>
+>>> a3.update_rating()
+10
+>>> a3.update_rating()   
+
+>>> first_author = Author.objects.order_by('-author_rating').first()
+>>> Author.objects.order_by('-author_rating').values('author_rating', 'author_
+id__username').first()
+{'author_rating': 39, 'author_id__username': 'anna_razenkova'}
+>>> 
+
+>>> a = Post.objects.order_by('-post_rating').first()
+>>> Post.objects.order_by('-post_rating').values('time_in', 'author__author__username', 'title').first()
+{'time_in': datetime.datetime(2023, 5, 17, 17, 45, 38, 105035, tzinfo=datetime.timezone.utc), 'author__author__username': 'anna_razenkova', 'title': 'Opera festiva
+l'}
+>>> a.preview()
+'Opera fetival will take place in St.Petersburg in one month...'
+>>>
+>>> comments = Comment.objects.all().filter(post__id=a.id)
+>>> comments    
+<QuerySet [<Comment: Comment object (3)>]>
+>>> Comment.objects.all().filter(post__id=a.id).values('post', 'comment_text', 'time_in', 'comment_rating', 'user').get()
+{'post': 3, 'comment_text': 'I am going to visit it. Will anyone join me?', 'time_in': datetime.datetime(2023, 5, 17, 18, 50, 50, 498854, tzinfo=datetime.timezone.
+utc), 'comment_rating': 1, 'user': 2}
+>>>
+
